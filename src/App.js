@@ -26,6 +26,21 @@ import React, { useMemo, useState, useEffect } from "react";
 import Table from "./Table";
 import "./App.css";
 
+const Genres = ({ values }) => {
+  // Loop through the array and create a badge-like component instead of a comma-separated string
+  return (
+    <>
+      {values.map((genre, idx) => {
+        return (
+          <span key={idx} className="badge">
+            {genre}
+          </span>
+        );
+      })}
+    </>
+  );
+};
+
 function App() {
   /* 
     - Columns is a simple array right now, but it will contain some logic later on. It is recommended by react-table to memoize the columns data
@@ -61,10 +76,18 @@ function App() {
           {
             Header: "Genre(s)",
             accessor: "show.genres",
+
+            Cell: ({ cell: { value } }) => <Genres values={value} />
           },
           {
             Header: "Runtime",
             accessor: "show.runtime",
+
+            Cell: ({ cell: { value } }) => {
+
+              const hour = Math.floor(value/60);
+              const min = Math.floor(value%60);
+            }
           },
           {
             Header: "Status",
@@ -82,8 +105,9 @@ function App() {
   // Using useEffect to call the API once mounted and set the data
   useEffect(() => {
     (async () => {
-      const result = await axios("https://api.tvmaze.com/search/shows?q=snow");
+      const result = await axios.get("https://api.tvmaze.com/search/shows?q=hello");
       setData(result.data);
+      //console.log("rendered?")
     })();
   }, []);
 
